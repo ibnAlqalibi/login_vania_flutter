@@ -38,13 +38,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void handleFetchData() async {
     try {
-      // Simulasi data yang diambil
       final jsonResponse = await fetchProtectedData();
-
-      // Parsing data JSON
       final Map<String, dynamic> data = jsonDecode(jsonResponse);
-
-      // Format data ke dalam string
       setState(() {
         _fetchedData = '''
 id: ${data['id']}
