@@ -1,3 +1,4 @@
+import 'dart:convert'; // Tambahkan ini untuk memparsing JSON
 import 'package:login_app/app/service/auth.dart';
 import 'package:flutter/material.dart';
 
@@ -12,6 +13,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isLoading = false;
+  String _fetchedData = "";
 
   void handleLogin() async {
     setState(() {
@@ -36,7 +38,24 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void handleFetchData() async {
     try {
-      await fetchProtectedData();
+      // Simulasi data yang diambil
+      final jsonResponse = await fetchProtectedData();
+
+      // Parsing data JSON
+      final Map<String, dynamic> data = jsonDecode(jsonResponse);
+
+      // Format data ke dalam string
+      setState(() {
+        _fetchedData = '''
+id: ${data['id']}
+nama: ${data['name']}
+email: ${data['email']}
+akun dibuat: ${data['created_at']}
+        ''';
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Data berhasil diambil!")),
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Gagal mengambil data: $e")),
@@ -91,6 +110,15 @@ class _LoginScreenState extends State<LoginScreen> {
             ElevatedButton(
               onPressed: handleHapusToken,
               child: const Text("Hapus Access Token"),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              "Data yang diambil:",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            Text(
+              _fetchedData.isEmpty ? "" : _fetchedData,
+              style: const TextStyle(fontSize: 16),
             ),
           ],
         ),

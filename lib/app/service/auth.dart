@@ -4,8 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 const secureStorage = FlutterSecureStorage();
 
-const String baseUrl =
-    'http://192.168.234.234:8000/api'; 
+const String baseUrl = 'http://192.168.1.11:8000/api';
 
 // Future<Map<String, String>> getDefaultHeaders() async {
 //   final accessToken = await secureStorage.read(key: 'access_token');
@@ -45,7 +44,7 @@ Future<void> login(String email, String password) async {
   }
 }
 
-Future<void> fetchProtectedData() async {
+Future<String> fetchProtectedData() async {
   final url = Uri.parse('$baseUrl/user/me');
   final accessToken = await secureStorage.read(key: 'access_token');
 
@@ -59,15 +58,15 @@ Future<void> fetchProtectedData() async {
     );
 
     if (response.statusCode == 200) {
-      print('Data retrieved successfully: ${response.body}');
+      return response.body;
     } else if (response.statusCode == 401) {
-      print('Invalid or expired access token. Please log in again.');
+      return "Invalid or expired access token. Please log in again";
     } else {
       final error = json.decode(response.body);
-      print('Error: ${error['message'] ?? 'Server error'}');
+      return 'Error: ${error['message'] ?? 'Server error'}';
     }
   } catch (e) {
-    print('An error occurred: $e');
+    return "An error occurred: $e";
   }
 }
 
